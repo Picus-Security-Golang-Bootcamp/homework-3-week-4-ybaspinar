@@ -43,6 +43,11 @@ func (b *BooksRepository) GetBooksWithAuthor(key string) []Books {
 	b.db.Table("books").Where("authorname LIKE ?", key).Find(&books)
 	return books
 }
+func (b *BooksRepository) GetAuthorWithBooks(key string) []Books {
+	var books []Books
+	b.db.Table("books").Where("authorname LIKE ?", key).Find(&books)
+	return books
+}
 func (b *BooksRepository) Buy(key string, amount int) error {
 	var book Books
 	b.db.Table("books").Where("authorname LIKE ?", key).Find(&book)
@@ -50,4 +55,12 @@ func (b *BooksRepository) Buy(key string, amount int) error {
 		b.db.Table("books").Where("id = ?", book.ID).Updates(map[string]interface{}{"stockamount": int(book.Stockamount) - amount})
 	}
 	return errors.New("Not Enough stock")
+}
+func (b *BooksRepository) Delete(key int) {
+	b.db.Table("books").Delete(map[string]interface{}{"ID": key})
+}
+func (b *BooksRepository) FindDeleted(key string) []Books {
+	var books []Books
+	b.db.Unscoped().Where("title LIKE ?", key).Find(&books)
+	return books
 }
