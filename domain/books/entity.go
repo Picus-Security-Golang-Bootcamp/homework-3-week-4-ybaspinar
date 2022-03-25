@@ -2,22 +2,27 @@ package books
 
 import (
 	"gorm.io/gorm"
+	"time"
 )
 
 type Books struct {
-	gorm.Model
-	ID          uint `gorm:"primaryKey"`
-	title       string
+	BookID      uint `gorm:"primaryKey,unique"`
+	Booktitle   string
 	Pages       int64
 	Stockamount int64
 	Price       float64
 	Stockid     int64
 	Isbn        int64
-	Author      Author `gorm:"embedded"`
+	AuthorID    uint `gorm:"foreignKey:AuthorID"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }
 
 type Author struct {
-	gorm.Model
-	AuthorID   uint
+	AuthorID   uint `gorm:"primaryKey,unique"`
 	Authorname string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  gorm.DeletedAt `gorm:"index"`
 }

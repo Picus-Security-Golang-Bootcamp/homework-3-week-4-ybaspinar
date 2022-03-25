@@ -3,11 +3,14 @@ package importjson
 import "encoding/json"
 
 type Books []Book
+type Authors []Author
 
-func UnmarshalBooks(data []byte) (Books, error) {
+func UnmarshalBooks(data []byte) (Books, Authors, error) {
 	var r Books
+	var a Authors
 	err := json.Unmarshal(data, &r)
-	return r, err
+	err = json.Unmarshal(data, &a)
+	return r, a, err
 }
 
 func (r *Books) Marshal() ([]byte, error) {
@@ -22,7 +25,7 @@ type Book struct {
 	Price       float64 `json:"price"`
 	Stockid     int64   `json:"stockid"`
 	Isbn        int64   `json:"ısbn"`
-	Author      Author  `json:"author"`
+	AuthorID    uint    `gorm:"foreignKey:AuthorID"`
 }
 
 type Author struct {

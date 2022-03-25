@@ -16,11 +16,15 @@ func NewBooksepository(db *gorm.DB) *BooksRepository {
 
 func (b *BooksRepository) Migrations() {
 	b.db.AutoMigrate(&Books{})
+	b.db.AutoMigrate(&Author{})
+
 }
-func (b *BooksRepository) InsertData(booklist importjson.Books) {
+func (b *BooksRepository) InsertData(booklist importjson.Books, Authorlist importjson.Authors) {
+	for _, author := range Authorlist {
+		b.db.FirstOrCreate(&author, Author{AuthorID: author.AuthorID})
+	}
 	for _, book := range booklist {
-		b.db.Where(Books{ID: uint(book.BookID)}).
-			Attrs(Books{ID: uint(book.BookID), title: book.Booktitle, Pages: book.Pages, Stockamount: book.Stockamount, Price: book.Price, Stockid: book.Stockid}).FirstOrCreate(&book)
+		b.db.FirstOrCreate(&book, Books{Isbn: book.Isbn})
 	}
 }
 func (b *BooksRepository) ListAll() []Books {
@@ -52,7 +56,7 @@ func (b *BooksRepository) Buy(key string, amount int) error {
 	var book Books
 	b.db.Table("books").Where("authorname LIKE ?", key).Find(&book)
 	if amount <= int(book.Stockamount) {
-		b.db.Table("books").Where("id = ?", book.ID).Updates(map[string]interface{}{"stockamount": int(book.Stockamount) - amount})
+		b.db.Table("books").Where("id = ?", book.BookID).Updates(map[string]interface{}{"stockamount": int(book.Stockamount) - amount})
 	}
 	return errors.New("Not Enough stock")
 }
