@@ -25,7 +25,7 @@ func main() {
 		os.Exit(1)
 	}
 	Books, err := importjson.UnmarshalBooks(file)
-	println(Books[1].Bookid)
+	println(Books[1].BookID)
 
 	err = godotenv.Load()
 	if err != nil {
@@ -39,4 +39,5 @@ func main() {
 	log.Println("Postgres connected")
 	booksRepo := books.NewBooksepository(db)
 	booksRepo.Migrations()
+	booksRepo.InsertData(Books)
 }

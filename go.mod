@@ -3,7 +3,6 @@ module github.com/Picus-Security-Golang-Bootcamp/homework-3-week-4-ybaspinar
 go 1.18
 
 require (
-	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/joho/godotenv v1.4.0
 	gorm.io/driver/postgres v1.3.1
 	gorm.io/gorm v1.23.3

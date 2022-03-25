@@ -15,7 +15,7 @@ func (r *Books) Marshal() ([]byte, error) {
 }
 
 type Book struct {
-	Bookid      int64   `json:"bookid"`
+	BookID      uint    `json:"bookid"`
 	Booktitle   string  `json:"booktitle"`
 	Pages       int64   `json:"pages"`
 	Stockamount int64   `json:"stockamount"`
@@ -26,6 +26,6 @@ type Book struct {
 }
 
 type Author struct {
-	Authorid   int64  `json:"authorid"`
+	AuthorID   uint   `json:"authorid"`
 	Authorname string `json:"authorname"`
 }
