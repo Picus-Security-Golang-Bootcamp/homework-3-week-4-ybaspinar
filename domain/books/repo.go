@@ -1,8 +1,6 @@
 package books
 
 import (
-	"errors"
-	"github.com/Picus-Security-Golang-Bootcamp/homework-3-week-4-ybaspinar/pkg/importjson"
 	"gorm.io/gorm"
 )
 
@@ -15,56 +13,58 @@ func NewBooksepository(db *gorm.DB) *BooksRepository {
 }
 
 func (b *BooksRepository) Migrations() {
-	b.db.AutoMigrate(&Books{})
+	b.db.AutoMigrate(&Book{})
 	b.db.AutoMigrate(&Author{})
 
 }
-func (b *BooksRepository) InsertData(booklist importjson.Books, Authorlist importjson.Authors) {
-	for _, author := range Authorlist {
-		b.db.FirstOrCreate(&author, Author{AuthorID: author.AuthorID})
+func (b *BooksRepository) InsertData(booklist []Book) {
+	for _, book := range booklist {
+		b.db.Where(map[string]interface{}{"authorname": book.Author.Authorname}).FirstOrCreate(&book.Author)
 	}
 	for _, book := range booklist {
-		b.db.FirstOrCreate(&book, Books{Isbn: book.Isbn})
+		b.db.FirstOrCreate(&book, map[string]interface{}{"book_id": book.BookID})
 	}
 }
-func (b *BooksRepository) ListAll() []Books {
-	var books []Books
+
+//ListAll gets all the entries from database
+func (b *BooksRepository) ListAll() []Book {
+	var books []Book
 	b.db.Find(&books)
 	return books
 }
-func (b *BooksRepository) Search(key string) []Books {
-	var books []Books
-	b.db.Where("title LIKE ?", key).First(&books)
+
+//Search returns books with given title CASE SENSETIVE
+func (b *BooksRepository) Search(key string) []Book {
+	var books []Book
+	b.db.Where("booktitle LIKE ?", key).First(&books)
 	return books
 }
-func (b *BooksRepository) GetById(key int) []Books {
-	var books []Books
-	b.db.Where("id = ?", key).First(&books)
+
+//GetById returns books with given ID
+func (b *BooksRepository) GetById(key int) []Book {
+	var books []Book
+	b.db.Where("book_id = ?", key).First(&books)
 	return books
 }
-func (b *BooksRepository) GetBooksWithAuthor(key string) []Books {
-	var books []Books
+func (b *BooksRepository) GetBooksWithAuthor(key string) []Book {
+	var books []Book
 	b.db.Table("books").Where("authorname LIKE ?", key).Find(&books)
 	return books
 }
-func (b *BooksRepository) GetAuthorWithBooks(key string) []Books {
-	var books []Books
+func (b *BooksRepository) GetAuthorWithBooks(key string) []Book {
+	var books []Book
 	b.db.Table("books").Where("authorname LIKE ?", key).Find(&books)
 	return books
 }
-func (b *BooksRepository) Buy(key string, amount int) error {
-	var book Books
-	b.db.Table("books").Where("authorname LIKE ?", key).Find(&book)
-	if amount <= int(book.Stockamount) {
-		b.db.Table("books").Where("id = ?", book.BookID).Updates(map[string]interface{}{"stockamount": int(book.Stockamount) - amount})
-	}
-	return errors.New("Not Enough stock")
-}
+
+//Delete soft deletes given ID
 func (b *BooksRepository) Delete(key int) {
-	b.db.Table("books").Delete(map[string]interface{}{"ID": key})
+	b.db.Table("books").Delete(map[string]interface{}{"book_id": key})
 }
-func (b *BooksRepository) FindDeleted(key string) []Books {
-	var books []Books
-	b.db.Unscoped().Where("title LIKE ?", key).Find(&books)
+
+//FindDeleted returns deleted books with given string
+func (b *BooksRepository) FindDeleted(key string) []Book {
+	var books []Book
+	b.db.Unscoped().Where("booktitle LIKE ?", key).Find(&books)
 	return books
 }

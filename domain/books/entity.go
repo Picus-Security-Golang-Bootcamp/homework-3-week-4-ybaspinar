@@ -5,7 +5,22 @@ import (
 	"time"
 )
 
-type Books struct {
+import "encoding/json"
+
+type Books []Book
+type Authors []Author
+
+func UnmarshalBooks(data []byte) (Books, error) {
+	var r Books
+	err := json.Unmarshal(data, &r)
+	return r, err
+}
+
+func (r *Book) Marshal() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+type Book struct {
 	BookID      uint `gorm:"primaryKey,unique"`
 	Booktitle   string
 	Pages       int64
@@ -17,6 +32,7 @@ type Books struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	Author      Author         `gorm:"-"`
 }
 
 type Author struct {
