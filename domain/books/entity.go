@@ -21,14 +21,14 @@ func (r *Book) Marshal() ([]byte, error) {
 }
 
 type Book struct {
-	BookID      uint `gorm:"primaryKey,unique"`
-	Booktitle   string
-	Pages       int64
-	Stockamount int64
-	Price       float64
-	Stockid     int64
-	Isbn        int64
-	AuthorID    uint `gorm:"foreignKey:AuthorID"`
+	BookID      uint    `json:"bookid",gorm:"primaryKey,unique"`
+	Booktitle   string  `json:"booktitle"`
+	Pages       int64   `json:"pages"`
+	Stockamount int64   `json:"stockamount"`
+	Price       float64 `json:"price"`
+	Stockid     int64   `json:"stockid"`
+	Isbn        int64   `json:"ısbn"`
+	AuthorID    uint    `gorm:"foreignKey:AuthorID"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
@@ -36,8 +36,8 @@ type Book struct {
 }
 
 type Author struct {
-	AuthorID   uint `gorm:"primaryKey,unique"`
-	Authorname string
+	AuthorID   uint   `json:"authorid",gorm:"primaryKey,unique"`
+	Authorname string `json:"authorname"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt `gorm:"index"`

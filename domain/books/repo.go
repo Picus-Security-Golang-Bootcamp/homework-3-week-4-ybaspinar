@@ -25,6 +25,7 @@ func (b *BooksRepository) InsertData(booklist []Book) {
 	//Checks if book exist if not add to db
 	for _, book := range booklist {
 		b.db.FirstOrCreate(&book, map[string]interface{}{"book_id": book.BookID})
+		println(book.AuthorID)
 	}
 }
 
