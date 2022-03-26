@@ -18,9 +18,11 @@ func (b *BooksRepository) Migrations() {
 
 }
 func (b *BooksRepository) InsertData(booklist []Book) {
+	//Checks if author exist if not add to db
 	for _, book := range booklist {
 		b.db.Where(map[string]interface{}{"authorname": book.Author.Authorname}).FirstOrCreate(&book.Author)
 	}
+	//Checks if book exist if not add to db
 	for _, book := range booklist {
 		b.db.FirstOrCreate(&book, map[string]interface{}{"book_id": book.BookID})
 	}
@@ -59,7 +61,14 @@ func (b *BooksRepository) GetAuthorWithBooks(key string) []Book {
 
 //Delete soft deletes given ID
 func (b *BooksRepository) Delete(key int) {
-	b.db.Table("books").Delete(map[string]interface{}{"book_id": key})
+	b.db.Table("books").Where(map[string]interface{}{"book_id": key}).
+		Delete(map[string]interface{}{"book_id": key})
+}
+
+//PermaDelete deletes given ID
+func (b *BooksRepository) PermaDelete(key int) {
+	b.db.Unscoped().Table("books").Where(map[string]interface{}{"book_id": key}).
+		Delete(map[string]interface{}{"book_id": key})
 }
 
 //FindDeleted returns deleted books with given string

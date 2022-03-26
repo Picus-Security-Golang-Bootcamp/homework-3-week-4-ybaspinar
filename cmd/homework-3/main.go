@@ -45,7 +45,6 @@ func main() {
 	booksRepo.InsertData(Books)
 
 	r := booksRepo.Search("Chess")
-
 	for _, book := range r {
 		println(book.Booktitle)
 	}
