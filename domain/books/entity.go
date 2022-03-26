@@ -28,7 +28,7 @@ type Book struct {
 	Price       float64 `json:"price"`
 	Stockid     int64   `json:"stockid"`
 	Isbn        int64   `json:"ısbn"`
-	AuthorID    uint    `gorm:"foreignKey:AuthorID"`
+	AuthorID    uint    `json:"authorid",gorm:"foreignKey:AuthorID"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
